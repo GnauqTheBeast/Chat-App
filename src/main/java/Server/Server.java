@@ -1,54 +1,40 @@
 package Server;
 
-import DAO.DAO;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.*;
 
 public class Server {
+    private static final int PORT = 2003;
+    private static final int CORE_POOL_SIZE = 10;
+    private static final int MAX_POOL_SIZE = 100;
+    private static final int QUEUE_CAPACITY = 8;
+    private static final long KEEP_ALIVE_TIME = 10L;
+    public static boolean isShutDown = false;
+
     public static void main(String[] args) {
-        try (ServerSocket myServer = new ServerSocket(2003)) {
-            System.out.println("Server started");
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            ThreadPoolExecutor threadPool = new ThreadPoolExecutor(
+                    CORE_POOL_SIZE,
+                    MAX_POOL_SIZE,
+                    KEEP_ALIVE_TIME,
+                    TimeUnit.SECONDS,
+                    new ArrayBlockingQueue<>(QUEUE_CAPACITY)
+            );
 
-            DAO dao = new DAO();
+            System.out.println("Server started on port " + PORT);
 
-            while (true) {
-                try {
-                    Socket clientSocket = myServer.accept();
-                    System.out.println("Server accepted & client connected");
+            while (!isShutDown) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("Client connected: " + clientSocket);
 
-                    DataInputStream is = new DataInputStream(clientSocket.getInputStream());
-                    DataOutputStream os = new DataOutputStream(clientSocket.getOutputStream());
-
-                    new Thread(() -> {
-                        try {
-                            while (true) {
-                                String input = is.readUTF();
-                                System.out.println("Received from client: " + input);
-
-                                os.writeUTF(input);
-                                os.writeUTF("TEST");
-                                os.flush(); 
-                            }
-                        } catch (IOException e) {
-                            System.out.println("Client disconnected: " + e);
-                        } finally {
-                            try {
-                                clientSocket.close();
-                            } catch (IOException e) {
-                                System.out.println("Error closing client socket: " + e);
-                            }
-                        }
-                    }).start(); // Start new thread for handling this client
-                } catch (IOException e) {
-                    System.out.println("Client connection error: " + e);
-                }
+                threadPool.submit(new ClientThread(clientSocket));
             }
+
+            threadPool.shutdownNow();
         } catch (IOException e) {
-            System.out.println("Server error: " + e);
+            System.err.println("Server error: " + e.getMessage());
         }
     }
 }
