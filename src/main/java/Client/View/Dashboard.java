@@ -4,47 +4,42 @@ import Client.ClientRun;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.net.Socket;
 
 public class Dashboard extends JFrame {
-    private JPanel panel1;
+    private JPanel mainPanel;
 
     public Dashboard() {
-        setTitle("Chat App");
+        setTitle("Chat App - Dashboard");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Main panel
-        panel1 = new JPanel();
-        panel1.setLayout(new BorderLayout());
-        panel1.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mainPanel.setBackground(new Color(245, 245, 245));
 
-        // Top label
         JLabel titleLabel = new JLabel("Welcome to the Dashboard", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         titleLabel.setForeground(new Color(0, 102, 204));
-        panel1.add(titleLabel, BorderLayout.NORTH);
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+        mainPanel.add(titleLabel, BorderLayout.NORTH);
 
-        // Center content area
         JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new GridLayout(3, 3, 15, 15));
+        contentPanel.setLayout(new GridLayout(2, 2, 15, 15));
         contentPanel.setBackground(new Color(245, 245, 245));
 
-        // Placeholder buttons for different sections
-        JButton profileButton = new JButton("Profile");
-        JButton settingsButton = new JButton("Settings");
-        JButton notificationsButton = new JButton("Notifications");
-        JButton logoutButton = new JButton("Logout");
+        JButton profileButton = createStyledButton("Profile", new Color(0, 153, 255));
+        JButton settingsButton = createStyledButton("Settings", new Color(0, 153, 204));
+        JButton notificationsButton = createStyledButton("Notifications", new Color(102, 204, 255));
+        JButton logoutButton = createStyledButton("Logout", new Color(255, 102, 102));
 
-        // Add buttons to the content panel
         contentPanel.add(profileButton);
         contentPanel.add(settingsButton);
         contentPanel.add(notificationsButton);
         contentPanel.add(logoutButton);
 
-        panel1.add(contentPanel, BorderLayout.CENTER);
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
 
         logoutButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Logging out...");
@@ -52,9 +47,30 @@ public class Dashboard extends JFrame {
             ClientRun.navigateScene(ClientRun.SceneName.LOGIN);
         });
 
-        add(panel1);
+        add(mainPanel);
+    }
+
+    private JButton createStyledButton(String text, Color color) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setForeground(Color.WHITE);
+        button.setBackground(color);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createLineBorder(color.darker()));
+        button.setPreferredSize(new Dimension(120, 50));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        button.setOpaque(true);
+        button.setBorderPainted(false);
+
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(color.darker(), 1),
+                BorderFactory.createEmptyBorder(5, 15, 5, 15)
+        ));
+
+        return button;
     }
 
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Dashboard().setVisible(true));
     }
 }

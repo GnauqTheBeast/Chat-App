@@ -3,6 +3,8 @@ package Client;
 import Client.Controller.ClientSocketHandler;
 import Client.View.Dashboard;
 import Client.View.Login;
+import Client.View.Profile;
+import Client.View.Register;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -11,11 +13,15 @@ import java.net.UnknownHostException;
 public class ClientRun {
     public static ClientSocketHandler clientHandler;
     public static Login login;
+    public static Register register;
+    public static Profile profile;
     public static Dashboard dashboard;
 
     public enum SceneName {
         LOGIN,
         DASHBOARD,
+        PROFILE,
+        REGISTER,
     }
 
     public ClientRun() {
@@ -25,11 +31,15 @@ public class ClientRun {
     public void initScences() {
         login = new Login();
         dashboard = new Dashboard();
+        register = new Register();
+        profile = new Profile();
     }
 
     private void closeAllScences() {
         login.dispose();
         dashboard.dispose();
+        register.dispose();
+        profile.dispose();
     }
 
     public static void navigateScene(ClientRun.SceneName sceneName) {
@@ -39,6 +49,12 @@ public class ClientRun {
                 break;
             case DASHBOARD:
                 dashboard.setVisible(true);
+                break;
+            case REGISTER:
+                register.setVisible(true);
+                break;
+            case PROFILE:
+                profile.setVisible(true);
                 break;
         }
     }
@@ -50,6 +66,12 @@ public class ClientRun {
                 break;
             case DASHBOARD:
                 dashboard.setVisible(false);
+                break;
+            case REGISTER:
+                register.setVisible(false);
+                break;
+            case PROFILE:
+                profile.setVisible(false);
                 break;
         }
     }

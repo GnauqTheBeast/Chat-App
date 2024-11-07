@@ -45,14 +45,28 @@ public class ClientThread extends Thread {
             return "Message command is null.";
         }
 
+        // message format is "LOGIN|<username>|<password>"
         if (message.startsWith("LOGIN")) {
-            String[] parts = message.split(" ");
-            if (parts.length == 3) { // message format is "LOGIN <username> <password>"
-                String username = parts[1];
-                String password = parts[2];
-                return controller.handleLogin(username, password);
+            String[] parts = message.split("\\|");
+            if (parts.length != 3) {
+                return "INVALID_FORMAT";
             }
-            return "INVALID_FORMAT";
+            String username = parts[1];
+            String password = parts[2];
+            return controller.handleLogin(username, password);
+        }
+
+        // message format is "REGISTER|<username>|<password>|<email>|<full_name>"
+        if (message.startsWith("REGISTER")) {
+            String[] parts = message.split("\\|");
+            if (parts.length != 5) {
+                return "INVALID_FORMAT";
+            }
+            String username = parts[1];
+            String password = parts[2];
+            String email = parts[3];
+            String full_name = parts[4];
+            return controller.handleRegister(username, password, email, full_name);
         }
 
         return "Unknown command.";

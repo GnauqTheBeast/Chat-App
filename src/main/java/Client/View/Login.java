@@ -1,7 +1,6 @@
 package Client.View;
 
 import Client.ClientRun;
-import Client.Controller.ClientSocketHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,8 +9,8 @@ import java.awt.event.ActionListener;
 
 public class Login extends JFrame {
     private JPanel mainPanel;
-    private JTextField usernameField;
-    private JPasswordField passwordField;
+    private final JTextField usernameField;
+    private final JPasswordField passwordField;
 
     public Login() {
         setTitle("Chat App");
@@ -49,6 +48,7 @@ public class Login extends JFrame {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(245, 245, 245));
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS)); // Arrange buttons vertically
 
         JButton loginButton = new JButton("Login");
         loginButton.setPreferredSize(new Dimension(100, 30));
@@ -65,18 +65,50 @@ public class Login extends JFrame {
 
                 if (username.isEmpty()) {
                     usernameField.grabFocus();
+                    JOptionPane.showMessageDialog(null, "Username cannot be empty.", "Input Error", JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
 
                 if (password.isEmpty()) {
                     passwordField.grabFocus();
+                    JOptionPane.showMessageDialog(null, "Password cannot be empty.", "Input Error", JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
 
-                ClientRun.clientHandler.sendMessage("LOGIN " + username + " " + password);
+                ClientRun.clientHandler.sendMessage("LOGIN|" + username + "|" + password);
+            }
+        });
+
+        JButton registerButton = new JButton("Don't have an account? Register");
+        registerButton.setPreferredSize(new Dimension(200, 30));
+        registerButton.setFont(new Font("Arial", Font.PLAIN, 12));
+        registerButton.setBackground(new Color(255, 153, 51));
+        registerButton.setForeground(Color.WHITE);
+        registerButton.setFocusPainted(false);
+
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ClientRun.closeScene(ClientRun.SceneName.LOGIN);
+                ClientRun.navigateScene(ClientRun.SceneName.REGISTER);
             }
         });
 
         buttonPanel.add(loginButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        buttonPanel.add(registerButton);
+
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
         add(mainPanel);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new Login().setVisible(true);
+            }
+        });
     }
 }

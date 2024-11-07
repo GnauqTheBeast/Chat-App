@@ -37,4 +37,34 @@ public class DAO {
         }
     }
 
+    public String getUsername(String username) {
+        String query = "SELECT * FROM users WHERE username = ?";
+        try (PreparedStatement statement = _connection.prepareStatement(query)) {
+            statement.setString(1, username);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("username");
+                }
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error retrieving username", e);
+        }
+    }
+
+
+    public void createUser(String username, String password, String email, String full_name) {
+        String query = "INSERT INTO users (username, password, email, full_name) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement statement = _connection.prepareStatement(query)) {
+            statement.setString(1, username);
+            statement.setString(2, password);
+            statement.setString(3, email);
+            statement.setString(4, full_name);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("error");
+            throw new RuntimeException(e);
+        }
+    }
+
 }
