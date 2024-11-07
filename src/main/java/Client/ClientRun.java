@@ -5,6 +5,7 @@ import Client.View.Dashboard;
 import Client.View.Login;
 import Client.View.Profile;
 import Client.View.Register;
+import Client.Model.User;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -12,6 +13,7 @@ import java.net.UnknownHostException;
 
 public class ClientRun {
     public static ClientSocketHandler clientHandler;
+    public static User currentUser;
     public static Login login;
     public static Register register;
     public static Profile profile;
@@ -54,6 +56,7 @@ public class ClientRun {
                 register.setVisible(true);
                 break;
             case PROFILE:
+                profile.updateProfileInfo();
                 profile.setVisible(true);
                 break;
         }
@@ -86,6 +89,10 @@ public class ClientRun {
         } catch (IOException e) {
             throw new RuntimeException("I/O error occurred: " + e.getMessage(), e);
         }
+    }
+
+    public static void setCurrentUser(User user) {
+        currentUser = user;
     }
 
     public static void main(String[] args) {

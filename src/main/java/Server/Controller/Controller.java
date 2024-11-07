@@ -1,6 +1,7 @@
 package Server.Controller;
 
 import Server.DAO.DAO;
+import Server.Model.User;
 
 public class Controller {
     private final DAO dao;
@@ -11,7 +12,8 @@ public class Controller {
 
     public String handleLogin(String username, String password) {
         if (isValidUser(username, password)) {
-            return "LOGIN|LOGIN_SUCCESS";
+            User user = dao.getUser(username);
+            return String.format("LOGIN|LOGIN_SUCCESS|%s", user.toString());
         }
         return "LOGIN|LOGIN_FAILED";
     }

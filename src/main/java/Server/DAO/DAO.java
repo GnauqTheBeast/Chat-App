@@ -1,5 +1,7 @@
 package Server.DAO;
 
+import Server.Model.User;
+
 import java.sql.*;
 
 public class DAO {
@@ -35,6 +37,23 @@ public class DAO {
         } catch (SQLException e) {
             throw new RuntimeException("Error checking login credentials", e);
         }
+    }
+
+    public User getUser(String username) {
+        String query = "SELECT username, email FROM users WHERE username = ?";
+
+        try (PreparedStatement statement = _connection.prepareStatement(query)) {
+            statement.setString(1, username);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new User(resultSet.getString("username"), resultSet.getString("email"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error checking login credentials", e);
+        }
+        return null;
     }
 
     public String getUsername(String username) {

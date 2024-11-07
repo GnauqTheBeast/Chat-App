@@ -3,6 +3,7 @@ package Server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.*;
 
 public class Server {
@@ -12,8 +13,10 @@ public class Server {
     private static final int QUEUE_CAPACITY = 8;
     private static final long KEEP_ALIVE_TIME = 10L;
     public static boolean isShutDown = false;
+    public static ArrayList<ClientThread> clientThreads;
 
     public static void main(String[] args) {
+        clientThreads = new ArrayList<ClientThread>();
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             ThreadPoolExecutor threadPool = new ThreadPoolExecutor(
                     CORE_POOL_SIZE,
@@ -28,8 +31,9 @@ public class Server {
             while (!isShutDown) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client connected: " + clientSocket);
-
-                threadPool.submit(new ClientThread(clientSocket));
+                ClientThread clientThread = new ClientThread(clientSocket);
+                clientThreads.add(clientThread);
+                threadPool.submit(clientThread);
             }
 
             threadPool.shutdownNow();

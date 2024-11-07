@@ -41,6 +41,11 @@ public class Dashboard extends JFrame {
 
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 
+        profileButton.addActionListener(e -> {
+            ClientRun.closeScene(ClientRun.SceneName.DASHBOARD);
+            ClientRun.navigateScene(ClientRun.SceneName.PROFILE);
+        });
+
         logoutButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Logging out...");
             ClientRun.closeScene(ClientRun.SceneName.DASHBOARD);
