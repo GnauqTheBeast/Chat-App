@@ -1,9 +1,13 @@
 package Server;
 
+import Server.Model.Room;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public class Server {
@@ -13,10 +17,10 @@ public class Server {
     private static final int QUEUE_CAPACITY = 8;
     private static final long KEEP_ALIVE_TIME = 10L;
     public static boolean isShutDown = false;
-    public static ArrayList<ClientThread> clientThreads;
+    public static Map<String, ClientThread> clientThreads = new HashMap<>();
+    public static ArrayList<Room> roomsList = new ArrayList<>();
 
     public static void main(String[] args) {
-        clientThreads = new ArrayList<ClientThread>();
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             ThreadPoolExecutor threadPool = new ThreadPoolExecutor(
                     CORE_POOL_SIZE,
@@ -32,7 +36,6 @@ public class Server {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Client connected: " + clientSocket);
                 ClientThread clientThread = new ClientThread(clientSocket);
-                clientThreads.add(clientThread);
                 threadPool.submit(clientThread);
             }
 

@@ -1,11 +1,9 @@
 package Client;
 
 import Client.Controller.ClientSocketHandler;
-import Client.View.Dashboard;
+import Client.View.*;
+import Client.Model.*;
 import Client.View.Login;
-import Client.View.Profile;
-import Client.View.Register;
-import Client.Model.User;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -14,16 +12,23 @@ import java.net.UnknownHostException;
 public class ClientRun {
     public static ClientSocketHandler clientHandler;
     public static User currentUser;
+    public static User competitor;
+    public static Room currentRoom;
     public static Login login;
     public static Register register;
     public static Profile profile;
     public static Dashboard dashboard;
+    public static PlayOption playOption;
+    public static RoomView room;
 
     public enum SceneName {
         LOGIN,
         DASHBOARD,
         PROFILE,
         REGISTER,
+        ROOM,
+        GAME,
+        PLAY_OPTION,
     }
 
     public ClientRun() {
@@ -35,6 +40,7 @@ public class ClientRun {
         dashboard = new Dashboard();
         register = new Register();
         profile = new Profile();
+        playOption = new PlayOption();
     }
 
     private void closeAllScences() {
@@ -42,6 +48,7 @@ public class ClientRun {
         dashboard.dispose();
         register.dispose();
         profile.dispose();
+        playOption.dispose();
     }
 
     public static void navigateScene(ClientRun.SceneName sceneName) {
@@ -59,6 +66,15 @@ public class ClientRun {
                 profile.updateProfileInfo();
                 profile.setVisible(true);
                 break;
+            case ROOM:
+                room = new RoomView();
+                room.setVisible(true);
+                break;
+            case GAME:
+                break;
+            case PLAY_OPTION:
+                playOption.setVisible(true);
+                break;
         }
     }
 
@@ -75,6 +91,12 @@ public class ClientRun {
                 break;
             case PROFILE:
                 profile.setVisible(false);
+                break;
+            case ROOM:
+                room.setVisible(false);
+                break;
+            case PLAY_OPTION:
+                playOption.setVisible(false);
                 break;
         }
     }

@@ -30,12 +30,12 @@ public class Dashboard extends JFrame {
         contentPanel.setBackground(new Color(245, 245, 245));
 
         JButton profileButton = createStyledButton("Profile", new Color(0, 153, 255));
-        JButton settingsButton = createStyledButton("Settings", new Color(0, 153, 204));
-        JButton notificationsButton = createStyledButton("Notifications", new Color(102, 204, 255));
+        JButton playButton = createStyledButton("Play", new Color(0, 153, 204));
+        JButton notificationsButton = createStyledButton("Setting", new Color(102, 204, 255));
         JButton logoutButton = createStyledButton("Logout", new Color(255, 102, 102));
 
         contentPanel.add(profileButton);
-        contentPanel.add(settingsButton);
+        contentPanel.add(playButton);
         contentPanel.add(notificationsButton);
         contentPanel.add(logoutButton);
 
@@ -50,6 +50,11 @@ public class Dashboard extends JFrame {
             JOptionPane.showMessageDialog(this, "Logging out...");
             ClientRun.closeScene(ClientRun.SceneName.DASHBOARD);
             ClientRun.navigateScene(ClientRun.SceneName.LOGIN);
+        });
+
+        playButton.addActionListener(e -> {
+            ClientRun.closeScene(ClientRun.SceneName.DASHBOARD);
+            ClientRun.navigateScene(ClientRun.SceneName.PLAY_OPTION);
         });
 
         add(mainPanel);

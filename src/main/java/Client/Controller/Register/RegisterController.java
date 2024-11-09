@@ -1,7 +1,6 @@
 package Client.Controller.Register;
 
 import Client.ClientRun;
-import Client.View.Register;
 
 import javax.swing.*;
 

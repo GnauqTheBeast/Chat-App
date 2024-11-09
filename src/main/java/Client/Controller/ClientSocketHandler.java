@@ -3,6 +3,7 @@ package Client.Controller;
 import Client.ClientRun;
 import Client.Controller.Login.LoginController;
 import Client.Controller.Register.RegisterController;
+import Client.Controller.Room.RoomController;
 
 import java.io.*;
 import java.net.Socket;
@@ -14,10 +15,12 @@ public class ClientSocketHandler {
     private boolean isRunning = true;
     private final LoginController loginController;
     private final RegisterController registerController;
+    private final RoomController roomController;
 
     public ClientSocketHandler(Socket socket) {
         this.loginController = new LoginController();
         this.registerController = new RegisterController();
+        this.roomController = new RoomController();
         this.socket = socket;
         try {
             os = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
@@ -43,6 +46,10 @@ public class ClientSocketHandler {
                             break;
                         case "REGISTER":
                             registerController.registerHandler(message);
+                        case "NOTIFY_OWNER_JOIN_ROOM":
+                            roomController.ownerJoinRoomHandler(message);
+                        case "JOIN_ROOM":
+                            roomController.competitorJoinRoomHandler(message);
                         case "INVALID_FORMAT":
                             break;
                     }
@@ -61,17 +68,6 @@ public class ClientSocketHandler {
         System.out.println("Client sent: " + message);
         os.println(message);
     }
-
-//    public String createMessage(String message) {
-//        String formatMessage = "";
-//
-//        switch (message) {
-//            case "LOGIN":
-//                formatMessage = String.format("%s %s", "LOGIN", message);
-//        }
-//
-//        return formatMessage;
-//    }
 
     public static void main(String[] args) {
     }
